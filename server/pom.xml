@@ -98,10 +98,32 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                           <mainClass>edu.mit.csail.db.ml.main.Main</mainClass>
+                        </transformer>
+                    </transformers>
+                    <!-- put your configurations here -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -154,6 +176,34 @@
                     <plugin>
                         <groupId>org.apache.thrift</groupId>
                         <artifactId>thrift-maven-plugin</artifactId>
+                        <version>0.10.0</version>
+                        <executions>
+                            <execution>
+                                <id>thrift-sources</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>thrift-0.11.0</id>
+            <activation>
+                <property>
+                    <name>thrift_version</name>
+                    <value>0.11.0</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.thrift</groupId>
+                        <artifactId>thrift-maven-plugin</artifactId>
+                        <!-- As of authoring, there is no 0.11.0 plugin available. -->
                         <version>0.10.0</version>
                         <executions>
                             <execution>

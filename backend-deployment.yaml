@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  #namespace: machine-learning-platform
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.15.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: backend
+  name: backend
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: backend
+    spec:
+      containers:
+      - args:
+        - mongo-mongodb
+        image: mitdbg/modeldb-backend:local
+        name: backend
+        ports:
+        - containerPort: 6543
+        volumeMounts:
+        - name: backendvol
+          mountPath: "/modeldb/server/codegen/db"
+          subPath: "db"
+        - name: mongo-creds
+          mountPath: "/mongo"
+        resources: {}
+      volumes:
+      - name: backendvol 
+        persistentVolumeClaim:
+          claimName: theclaim #modeldb-pvc
+      - name: mongo-creds
+        secret:
+          secretName: mongo-mongodb 
+     #restartPolicy: Always
+status: {}

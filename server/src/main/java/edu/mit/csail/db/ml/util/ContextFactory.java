@@ -9,11 +9,19 @@ import edu.mit.csail.db.ml.server.storage.metadata.MetadataDb;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * This class contains logic for connecting to the database.
  */
 public class ContextFactory {
+  static {
+    try {
+      Class.forName("org.sqlite.JDBC");
+    } catch (ClassNotFoundException e){
+      e.printStackTrace();
+    }
+  }
   /**
    * Create a database context that reflects a connection to a database.
    * @param username - The username to connect to the database.
@@ -31,23 +39,22 @@ public class ContextFactory {
     ModelDbConfig.DatabaseType dbType
     ) throws SQLException, IllegalArgumentException {
     Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
-
     switch (dbType) {
       case SQLITE: return DSL.using(conn, SQLDialect.SQLITE);
     }
-
     throw new IllegalArgumentException(
       "Cannot connect to DatabaseType: " + dbType);
   }
-
   public static MetadataDb createMetadataDb(
     String host, 
     int port, 
+    Optional<String> username,
+    Optional<String> password,
     String name, 
     ModelDbConfig.MetadataDbType dbType) {
     switch (dbType) {
       case MONGODB: 
-        MetadataDb db = new MongoMetadataDb(host, port, name);
+        MetadataDb db = new MongoMetadataDb(host, port, username, password, name);
         db.open();
         return db;
     }

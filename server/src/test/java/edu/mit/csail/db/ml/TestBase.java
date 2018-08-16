@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import edu.mit.csail.db.ml.server.storage.metadata.MetadataDb;
 import edu.mit.csail.db.ml.server.storage.metadata.MongoMetadataDb;
 
@@ -62,7 +63,7 @@ public class TestBase {
 
     config = ModelDbConfig.parse(new String[] {});
     metadataDb = new MongoMetadataDb(config.metadataDbHost, 
-      config.metadataDbPort, config.metadataDbTestDbName);
+      config.metadataDbPort, Optional.empty(), Optional.empty(), config.metadataDbTestDbName);
     metadataDb.open();
     return metadataDb;
   }
